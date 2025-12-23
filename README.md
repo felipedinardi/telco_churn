@@ -1,52 +1,58 @@
-# Telco Churn Prediction Project
+# Telco Customer Churn Prediction
 
 ## Overview
 
-This project focuses on predicting customer churn for a telecommunications company using machine learning techniques. The business objective is to proactively identify customers who are likely to churn so that retention strategies can be implemented, ultimately reducing revenue loss and increasing customer lifetime value.  
+This project aims to **predict customer churn** for a telecommunications company using machine learning. The business goal is to **proactively identify customers at risk of leaving**, allowing retention strategies to be applied and minimizing revenue loss.  
 
-From a business perspective, **reducing churn is critical**, as acquiring a new customer can cost 5-7 times more than retaining an existing one. Predicting churn allows marketing and customer success teams to target at-risk customers with personalized offers and interventions.
+**Business Impact:** Retaining existing customers is much more cost-effective than acquiring new ones. By predicting churn, the company can target high-risk customers with personalized offers and support, improving **customer lifetime value** and loyalty.
 
 ---
 
 ## Business Problem
 
-- **Problem Statement:** Identify customers at risk of leaving the company.  
-- **Objective:** Maximize retention by targeting interventions effectively.  
-- **Metric Focus:** **Recall** — because it is more important to identify as many churners as possible, even at the cost of some false positives. Missing a potential churner could result in lost revenue.
+- **Objective:** Identify customers likely to churn.  
+- **Primary Metric:** **Recall**, to ensure that as many churners as possible are correctly identified. Missing a potential churner could result in revenue loss.  
+- **Secondary Metrics:** Accuracy, Precision, F1-score — tracked for model benchmarking.  
 
 ---
 
 ## Dataset
 
-The dataset used in this project is [Telco Customer Churn Dataset](telco_churn.csv), which includes features related to customer demographics, account information, and service usage.  
+The dataset includes **demographic, account, and service-related features** of customers:
 
-**Key features include:**  
+- Demographics: `gender`, `SeniorCitizen`, `Partner`, `Dependents`  
+- Account Info: `tenure`, `Contract`, `PaymentMethod`, `PaperlessBilling`  
+- Services: `PhoneService`, `MultipleLines`, `InternetService`, `OnlineSecurity`, `TechSupport`, `DeviceProtection`, `StreamingTV`, `StreamingMovies`  
+- Charges: `MonthlyCharges`, `TotalCharges`  
 
-- `gender`, `SeniorCitizen`, `Partner`, `Dependents`  
-- `tenure`, `Contract`, `PaymentMethod`  
-- `MonthlyCharges`, `TotalCharges`  
-- Service features: `PhoneService`, `InternetService`, `OnlineSecurity`, `TechSupport`, `StreamingTV`, `StreamingMovies`
+Data cleaning included:
+- Converting **Yes/No** to **0/1**  
+- Replacing `'No internet service'` / `'No phone service'` with `'No'`  
+- Filling missing `TotalCharges` with `tenure * MonthlyCharges`  
+- One-Hot Encoding for categorical variables  
+- Scaling numeric features using `StandardScaler`
 
 ---
 
 ## Modeling Approach
 
-A structured machine learning pipeline was used to preprocess the data and evaluate multiple algorithms. The workflow included:
+1. **Model Comparison**  
+   - Tested multiple models using cross-validation with **StratifiedKFold**:  
+     - Logistic Regression  
+     - Decision Tree  
+     - Random Forest  
+     - XGBoost  
+   - Evaluated using **recall**, prioritizing business need.  
+   
+2. **Baseline Model**  
+   - Logistic Regression with default hyperparameters.  
 
-1. **Data Preprocessing**  
-   - Handling categorical variables with **One-Hot Encoding**  
-   - Scaling numerical features with **StandardScaler**  
-   - Handling missing values and data inconsistencies
+3. **Hyperparameter Tuning**  
+   - Grid search applied to Logistic Regression for optimal:  
+     - `C`, `solver`, `penalty`, `class_weight`  
+   - Focused on maximizing **recall**.  
 
-2. **Modeling**  
-   - Baseline models tested for benchmarking  
-   - Hyperparameter optimization to improve recall  
-
-3. **Evaluation Metrics**  
-   - **Accuracy**: measures overall correctness  
-   - **Precision**: fraction of predicted churners that actually churned  
-   - **Recall**: fraction of actual churners correctly identified (**primary metric**)  
-   - **F1-score**: harmonic mean of precision and recall  
+4. **Evaluation Metrics**
 
 | Metric    | Baseline | Optimized |
 |-----------|----------|-----------|
@@ -55,29 +61,33 @@ A structured machine learning pipeline was used to preprocess the data and evalu
 | Recall    | 0.529412 | 0.799465  |
 | F1-score  | 0.578102 | 0.617769  |
 
-> The optimized model significantly increased recall, which aligns with the business goal of capturing as many churners as possible.
+> The optimized model significantly improved recall, achieving the business goal of **catching more churners**.  
 
 ---
 
-## Production Deployment
+## Deployment
 
-The final model is deployed on **Streamlit** for interactive exploration and real-time predictions:  
+The final model is deployed for interactive use via **Streamlit**:  
 
-https://telcochurn-55b3vcch8e4frauuszw6tf.streamlit.app/  
+[Open the App](https://telcochurn-55b3vcch8e4frauuszw6tf.streamlit.app/)  
+
+**Saved artifacts:**  
+- `churn_model.pkl` → Trained optimized model  
+- `model_columns.pkl` → Columns used in training
 
 ---
 
 ## Next Steps
 
-1. **Model Monitoring:** Track performance metrics as new data is added to ensure the model continues to perform well.  
-2. **Retraining Strategy:** If recall or other metrics degrade, retraining will be necessary to maintain predictive power.  
-3. **Feature Expansion:** Incorporate new behavioral or usage data to further improve model accuracy and recall.  
-4. **Business Integration:** Collaborate with marketing and customer success teams to operationalize retention strategies based on model predictions.
+1. **Model Monitoring:** Track recall and other metrics as new customer data becomes available.  
+2. **Retraining:** If performance drops, retraining with new data will be performed.  
+3. **Feature Expansion:** Include new behavioral or service usage features to further enhance predictions.  
+4. **Business Integration:** Collaborate with marketing and customer success teams to leverage predictions in retention campaigns.  
 
 ---
 
 ## Conclusion
 
-This project demonstrates a **data-driven approach to customer retention**, balancing technical rigor with business impact. By prioritizing recall, the model ensures that the company can proactively engage at-risk customers, ultimately safeguarding revenue and enhancing customer loyalty.  
+This project demonstrates a **data-driven approach to reducing churn**, combining **robust technical methodology** with **business impact**. By prioritizing recall, the model ensures **maximum identification of at-risk customers**, helping the company protect revenue and enhance customer loyalty.
 
 ---
